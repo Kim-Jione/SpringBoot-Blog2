@@ -2,6 +2,7 @@ package site.metacoding.red.web.dto.response.boards;
 
 import lombok.Getter;
 import lombok.Setter;
+import site.metacoding.red.web.dto.request.boards.PagingDto;
 
 @Setter
 @Getter

@@ -24,7 +24,7 @@ public class BoardsController {
 	private final BoardsDao boardsDao;
 	// @PostMapping("/boards/{id}/delete")
 	// @PostMapping("/boards/{id}/update")
-
+	
 	@PostMapping("/boards")
 	public String writeBoards(WriteDto writeDto) {
 		// 1번 세션에 접근해서 세션값을 확인한다. 그때 Users로 다운캐스팅하고 키값은 principal로 한다.
@@ -45,16 +45,21 @@ public class BoardsController {
 
 		return "redirect:/"; // 메인페이지 이동
 	}
-
+	
+	// http://localhost:8000/
+	// http://localhost:8000/?page=0
 	@GetMapping({ "/", "/boards" })
-	public String getBoardList(Model model) {
+	public String getBoardList(Model model, Integer page) { // 0 -> 0, 1 -> 10, 2 -> 20
 		// 조건 : xml 파일 들어갔을 때 쿼리문이 존재해야 한다
 		// 조건 : join 해야 하는지 구별해야 한다 UI 나올 때 작성자 이름이 없으면 join 할 필요가 없다. 있을 경우에는 다른 테이블에
 		// 정보가 있으니 join 해야 한다
 		// xml 파일에서 메인이 되는 테이블을 생각해야 한다
 		// 개발시에는 테이블에 필요한 데이터를 다 넣어 놓고 최종 완료시에 필요한 데이터들만 남겨놓는게 좋다
 		// mapper -> spring과 db, dto -> 클라이언트와 controller의 통신
-		List<MainDto> boardsList = boardsDao.findAll();
+		// 내가 primary 키를 받으면 쿼리 스트림
+		if(page==null) page = 0;
+		int startNum = page*10;
+		List<MainDto> boardsList = boardsDao.findAll(startNum);
 		model.addAttribute("boardsList", boardsList);
 		return "boards/main";
 	}

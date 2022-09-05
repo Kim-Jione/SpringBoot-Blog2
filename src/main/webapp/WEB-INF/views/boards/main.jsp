@@ -22,7 +22,9 @@
 
 		</tbody>
 	</table>
-
+	<h2>${param.page}</h2>
+	
+	
 
 </div>
 
