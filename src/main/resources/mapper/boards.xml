@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="site.metacoding.red.domain.boards.BoardsDao">
+	
+	<insert id="insert">
+		INSERT INTO boards(id, title, content, usersId, createdAt) 
+		VALUES(boards_seq.nextval, #{title}, #{content}, #{usersId}, sysdate)
+	</insert>
+
+	<select id="findById" resultType="site.metacoding.red.domain.boards.Boards">
+		SELECT id, title, content FROM boards WHERE id=#{id}
+	</select>
+	
+	<select id="findAll" resultType="site.metacoding.red.web.dto.response.boards.MainDto">
+		SELECT b.id, b.title, u.username
+		FROM boards b 
+		INNER JOIN users u 
+		ON b.usersId = u.id 
+		ORDER BY b.id DESC
+	</select>
+	
+	<update id="update">
+	
+	</update>
+	
+	<delete id="delete">
+	
+	</delete>
+
+</mapper>
