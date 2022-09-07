@@ -15,6 +15,7 @@ import site.metacoding.red.domain.boards.BoardsDao;
 import site.metacoding.red.domain.users.Users;
 import site.metacoding.red.web.dto.request.boards.WriteDto;
 import site.metacoding.red.web.dto.response.boards.MainDto;
+import site.metacoding.red.web.dto.response.boards.PagingDto;
 
 @RequiredArgsConstructor
 @Controller
@@ -33,9 +34,6 @@ public class BoardsController {
 		// 2번 pricipal null인지 확인하고 null이면 loginForm 리다이렉션해준다.
 		if (principal == null) {
 			return "redirect:/loginForm";
-			// writeDto.toEntity가 boards가 되서 new 할 필요가 없다
-			// Dto에 있는건 그대로 넣으면 되고 UsersId는 세션에서 가져온다
-			// 보드스에 인서트 할건데 디티오를 인서트(사용자로부터 받은 값으로)할건데 투엔터티중에 모자란 유저 아이디를 가져온다
 		}
 
 		// 3번 BoardsDao에 접근해서 insert 메서드를 호출한다.
@@ -43,19 +41,38 @@ public class BoardsController {
 		// 조건 : entity에는 세션의 principal에 getId가 필요하다.
 		boardsDao.insert(writeDto.toEntity(principal.getId()));
 
-		return "redirect:/"; // 메인페이지 이동
+		return "redirect:/";
 	}
 
+	// http://localhost:8000/
+	// http://localhost:8000/?page=0
 	@GetMapping({ "/", "/boards" })
-	public String getBoardList(Model model) {
-		// 조건 : xml 파일 들어갔을 때 쿼리문이 존재해야 한다
-		// 조건 : join 해야 하는지 구별해야 한다 UI 나올 때 작성자 이름이 없으면 join 할 필요가 없다. 있을 경우에는 다른 테이블에
-		// 정보가 있으니 join 해야 한다
-		// xml 파일에서 메인이 되는 테이블을 생각해야 한다
-		// 개발시에는 테이블에 필요한 데이터를 다 넣어 놓고 최종 완료시에 필요한 데이터들만 남겨놓는게 좋다
-		// mapper -> spring과 db, dto -> 클라이언트와 controller의 통신
-		List<MainDto> boardsList = boardsDao.findAll();
+	public String getBoardList(Model model, Integer page) { // 0 -> 0, 1->10, 2->20
+		if (page == null)
+			page = 0;
+		int startNum = page * 3; // 1. 수정함
+
+		List<MainDto> boardsList = boardsDao.findAll(startNum);
+		PagingDto paging = boardsDao.paging(page);
+
+		// 2. 수정함
+		final int blockCount = 5;
+
+		int currentBlock = page / blockCount;
+		int startPageNum = 1 + blockCount * currentBlock;
+		int lastPageNum = 5 + blockCount * currentBlock;
+
+		if (paging.getTotalPage() < lastPageNum) {
+			lastPageNum = paging.getTotalPage();
+		}
+
+		paging.setBlockCount(blockCount);
+		paging.setCurrentBlock(currentBlock);
+		paging.setStartPageNum(startPageNum);
+		paging.setLastPageNum(lastPageNum);
+
 		model.addAttribute("boardsList", boardsList);
+		model.addAttribute("paging", paging);
 		return "boards/main";
 	}
 
@@ -66,7 +83,7 @@ public class BoardsController {
 	}
 
 	@GetMapping("/boards/writeForm")
-	public String writeForm() {// 글쓰기는 항상 이공식 사용
+	public String writeForm() {
 		Users principal = (Users) session.getAttribute("principal");
 		if (principal == null) {
 			return "redirect:/loginForm";
