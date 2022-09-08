@@ -1,0 +1,23 @@
+[33mcommit 219df8939108426a1af2a49bddaf6afcb7fd0910[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m)[m
+Author: kimjiwon <hghg1036@naver.com>
+Date:   Thu Sep 8 11:22:22 2022 +0900
+
+    글 수정 완료 - front required와 maxlength 적용
+
+[33mcommit 4b297880bb459d3f586d211f7618acbe6f039173[m[33m ([m[1;31morigin/master[m[33m)[m
+Author: kimjiwon <hghg1036@naver.com>
+Date:   Wed Sep 7 16:45:23 2022 +0900
+
+    삭제기능 완료 - UI 필요
+
+[33mcommit c8e1a92f02348a644e72aa680da30a99c4efd535[m
+Author: kimjiwon <hghg1036@naver.com>
+Date:   Wed Sep 7 14:42:31 2022 +0900
+
+    페이징 쿼리 - UI 완료
+
+[33mcommit a9cf116a6038734e74f0dcfaa0806ea6334b28d3[m[33m ([m[1;31morigin/master-copy[m[33m, [m[1;32mmaster-copy[m[33m)[m
+Author: kimjiwon <hghg1036@naver.com>
+Date:   Mon Sep 5 13:16:57 2022 +0900
+
+    게시글 목록보기 완료

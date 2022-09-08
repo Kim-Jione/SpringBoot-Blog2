@@ -132,20 +132,38 @@ public class BoardsController {
 		return "redirect:/";
 	}
 
+	/*
+	 * 받을 수 있는 값 첫 번째 ?page=0&keyword=스프링
+	 * 
+	 */
 	@GetMapping({ "/", "/boards" })
-	public String getBoardList(Model model, Integer page) { // 0 -> 0, 1->10, 2->20
-		if (page == null)
+	public String getBoardList(Model model, Integer page, String keyword) { // 0 -> 0, 1->10, 2->20
+		System.out.println("dddddddddd : keyword : " + keyword);
+		if (page == null) {
 			page = 0;
+		}
 		int startNum = page * 3;
 
-		List<MainDto> boardsList = boardsDao.findAll(startNum);
-		PagingDto paging = boardsDao.paging(page);
-		paging.makeBlockInfo();
+		if (keyword == null || keyword.isEmpty()) {
+			System.out.println("=================================");
+			List<MainDto> boardsList = boardsDao.findAll(startNum);
+			PagingDto paging = boardsDao.paging(page, null);
+			paging.makeBlockInfo(keyword);
 
-		model.addAttribute("boardsList", boardsList);
-		model.addAttribute("paging", paging);
+			model.addAttribute("boardsList", boardsList);
+			model.addAttribute("paging", paging);
+		} else {
+
+			List<MainDto> boardsList = boardsDao.findSearch(startNum, keyword);
+			PagingDto paging = boardsDao.paging(page, keyword);
+			paging.makeBlockInfo(keyword);
+
+			model.addAttribute("boardsList", boardsList);
+			model.addAttribute("paging", paging);
+		}
 
 		return "boards/main";
+
 	}
 
 	@GetMapping("/boards/{id}")
